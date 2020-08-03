@@ -3,15 +3,12 @@ package com.example.demopaypal;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
-
 import java.io.IOException;
-import static org.apache.http.util.EncodingUtils.*;
-
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,17 +29,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private static final String URL_STRING = "https://www.paypal.com/cgi-bin/webscr";
-
     private void postData(String amount, String recipient) throws IOException {
         WebView webView = new WebView(this);
 
         setContentView(webView);
 
-        String postData = "cmd=_xclick&business="+recipient+"&lc=US&amount="+amount+".00&currency_code=USD&button_subtype=services";
+        String postData = "cmd=" + URLEncoder.encode("_xclick", "UTF-8") +
+                "&business=" + URLEncoder.encode(recipient, "UTF-8")
+                +"&lc=" + URLEncoder.encode("US", "UTF-8")
+                +"&amount=" + URLEncoder.encode(amount, "UTF-8")
+                +"&currency_code=" + URLEncoder.encode("USD", "UTF-8")
+                +"&button_subtype=" + URLEncoder.encode("services", "UTF-8");
+        webView.postUrl("https://www.paypal.com/cgi-bin/webscr",postData.getBytes());
 
-        webView.postUrl(URL_STRING,getBytes(postData,"Base64"));
 
     }
 }
